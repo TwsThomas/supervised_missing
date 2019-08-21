@@ -2,10 +2,10 @@ import numpy as np
 from sklearn.datasets import make_friedman1
 
 
-def generate_without_missing_values(model='simple', n_samples=200,
+def generate_without_missing_values(data='simple', n_samples=200,
                                     n_features=2, random_state=0):
 
-    assert model in ['simple', 'linear', 'quadratic', 'friedman']
+    assert data in ['simple', 'linear', 'quadratic', 'friedman']
 
     np.random.seed(random_state)
     mean = np.ones(n_features)
@@ -15,36 +15,36 @@ def generate_without_missing_values(model='simple', n_samples=200,
     X = np.random.multivariate_normal(mean, cov, size=n_samples)
     epsilon = 0.1 * np.random.randn(n_samples)
 
-    if model == 'simple':
+    if data == 'simple':
         y = X[:, 0] + epsilon
-    if model == 'linear':
+    if data == 'linear':
         beta = [1, 2] + list(np.random.randn(n_features-2))
         y = X.dot(beta) + epsilon
-    if model == 'quadratic':
+    if data == 'quadratic':
         y = X[:, 0] * X[:, 0] + epsilon
-    if model == 'friedman':
+    if data == 'friedman':  # X is no more gaussian here
         X, y = make_friedman1(n_samples=n_samples,
                               n_features=max(5, n_features),
                               noise=0.1, random_state=random_state)
     return X, y
 
 
-def generate_with_missing_values(model='simple', n_samples=200,
+def generate_with_missing_values(data='simple', n_samples=200,
                                  n_features=2, random_state=0,
                                  missing_mechanism='mcar',
                                  missing_rate=0.1):
 
-    X, y = generate_without_missing_values(model, n_samples,
-                                         n_features, random_state)
+    X, y = generate_without_missing_values(data, n_samples,
+                                           n_features, random_state)
 
     if missing_mechanism == 'mcar':
         missing_mask = np.random.binomial(1, missing_rate,
                                           (n_samples, n_features))
     elif missing_mechanism == 'censored':
-        p = .7  # percentile
-        B = np.random.binomial(1, missing_rate/p,
-                               (n_samples, n_features))
-        missing_mask = (X > np.percentile(X, 100*p)) * B
+        # p = .7  # percentile
+        # B = np.random.binomial(1, missing_rate,
+        #                        (n_samples, n_features))
+        missing_mask = (X > np.percentile(X, 100*(1-missing_rate)))  # * B
     elif missing_mechanism == 'predictive':
         missing_mask = np.random.binomial(1, missing_rate,
                                           (n_samples, n_features))

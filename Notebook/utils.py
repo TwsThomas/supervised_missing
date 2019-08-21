@@ -13,9 +13,9 @@ class MIAImputer(BaseEstimator, TransformerMixin):
     def __init__(self, add_indicator=False, fill_value=10**5):
         self.add_indicator = add_indicator
         self.simple_imputer_max = SimpleImputer(strategy='constant',
-                                                fill_value=fill_value)
+                                                fill_value=10**5)
         self.simple_imputer_min = SimpleImputer(strategy='constant',
-                                                fill_value=-fill_value)
+                                                fill_value=-10**5)
 
     def fit(self, X, y=None):
         self.simple_imputer_max.fit(X, y)
