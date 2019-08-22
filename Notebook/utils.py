@@ -9,6 +9,10 @@ from sklearn.impute import SimpleImputer, MissingIndicator
 
 
 class MIAImputer(BaseEstimator, TransformerMixin):
+    """ MIA imputation strategy
+    
+    duplicate each columns by remplacing each np.nan by once +inf and once -inf
+    """
 
     def __init__(self, add_indicator=False, fill_value=10**5):
         self.add_indicator = add_indicator

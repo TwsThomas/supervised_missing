@@ -4,6 +4,7 @@ from sklearn.datasets import make_friedman1
 
 def generate_without_missing_values(data='simple', n_samples=200,
                                     n_features=2, random_state=0):
+    """generate canonical regression data"""
 
     assert data in ['simple', 'linear', 'quadratic', 'friedman']
 
@@ -33,6 +34,7 @@ def generate_with_missing_values(data='simple', n_samples=200,
                                  n_features=2, random_state=0,
                                  missing_mechanism='mcar',
                                  missing_rate=0.1):
+    """Generate regression data with missing values"""
 
     X, y = generate_without_missing_values(data, n_samples,
                                            n_features, random_state)
